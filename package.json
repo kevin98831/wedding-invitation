@@ -1,20 +1,7 @@
 {
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0"
+    "build": "node build.js"
   },
-  "dependencies": {
-    "@supabase/supabase-js": "latest",
-    "@tailwindcss/vite": "latest",
-    "@vitejs/plugin-react": "latest",
-    "framer-motion": "latest",
-    "lucide-react": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "tailwindcss": "latest",
-    "vite": "latest",
-    "@vitejs/plugin-legacy": "latest"
-  },
+  "dependencies": {},
   "devDependencies": {}
 }

@@ -1,13 +1,501 @@
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>我们结婚啦</title>
-    <meta name="description" content="婚礼电子请帖与来宾登记" />
-  </head>
-  <body>
-    <div id="root"></div><noscript><div style="padding:24px;text-align:center;color:#8d1f22">请开启浏览器 JavaScript 后查看婚礼请帖</div></noscript>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>我们结婚啦</title>
+  <meta name="description" content="婚礼电子请帖">
+  <style>
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:#5a352f;
+      background:#f4e9da;
+      font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif;
+      background-image:
+        radial-gradient(circle at 12% 6%,rgba(255,255,255,.75),transparent 22%),
+        radial-gradient(circle at 86% 18%,rgba(199,40,46,.12),transparent 24%),
+        linear-gradient(180deg,#f8eadb 0%,#f2d8d0 48%,#f7eadf 100%);
+    }
+    a{text-decoration:none;color:inherit}
+    button,input,select,textarea{font:inherit}
+    .wrap{max-width:820px;margin:0 auto;padding:16px 14px 98px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:rgba(255,249,239,.84);padding:8px 13px;box-shadow:0 6px 18px rgba(100,55,35,.10);font-size:13px;color:#704b43}
+    .circle{width:42px;height:42px;border:none;border-radius:50%;background:rgba(255,249,239,.84);box-shadow:0 6px 18px rgba(100,55,35,.10);color:#a92328}
+    .screen{
+      position:relative;overflow:hidden;border-radius:34px;
+      background:rgba(255,248,237,.92);
+      border:1px solid rgba(255,255,255,.85);
+      box-shadow:0 24px 80px rgba(78,43,27,.18);
+    }
+    .screen:before{
+      content:"";position:absolute;inset:0;opacity:.14;
+      background:url("assets/illustration.png") center top/cover no-repeat;
+      mix-blend-mode:multiply;
+      pointer-events:none;
+    }
+    .hero{position:relative;padding:22px 18px 24px}
+    .stamp{position:absolute;right:16px;top:18px;transform:rotate(-10deg);border:1px solid rgba(169,35,40,.5);border-radius:50%;padding:12px 9px;text-align:center;font-size:10px;line-height:1.25;color:#a92328;background:rgba(255,250,244,.52)}
+    .hero-img{display:block;width:100%;height:360px;object-fit:cover;object-position:center top;border-radius:28px;box-shadow:0 14px 44px rgba(91,51,30,.13)}
+    .hero-card{position:relative;margin-top:-52px;border-radius:28px;border:1px solid rgba(255,255,255,.78);background:rgba(255,250,241,.92);padding:22px;box-shadow:0 18px 50px rgba(91,51,30,.14);backdrop-filter:blur(8px)}
+    .tag{display:inline-block;transform:rotate(-3deg);border:1px solid rgba(178,64,61,.5);border-radius:4px;padding:4px 10px;font-size:11px;letter-spacing:.16em;color:#a92328}
+    .eng{margin-top:13px;font-family:Georgia,"Times New Roman",serif;font-size:48px;line-height:.95;font-style:italic;color:#8d1f22}
+    .eng2{font-family:Georgia,"Times New Roman",serif;font-size:42px;line-height:1;color:#8d1f22}
+    .sub{margin:18px 0 0;font-size:17px;letter-spacing:.16em;color:#5f3e37}
+    .dash{display:flex;align-items:center;gap:8px;margin-top:18px;color:#9e2f32}
+    .dash:after{content:"";height:1px;border-top:1px dashed #c79575;flex:1}
+    .namebox{margin-top:16px;border:1px solid #ead8bc;background:#fffdf8;border-radius:18px;padding:12px;text-align:center;font-size:19px;letter-spacing:.08em;color:#74342f}
+    .namebox b{color:#9c2f2f}
+    .card{border:1px solid #e7d3b8;background:rgba(255,249,239,.90);border-radius:28px;box-shadow:0 16px 45px rgba(91,51,30,.12);padding:18px;margin-top:18px}
+    .film{background:rgba(242,201,192,.76)}
+    .title{text-align:center;font-family:Georgia,"Songti SC",serif;color:#8d1f22;font-size:22px;letter-spacing:.14em;margin:0}
+    .muted{font-size:13px;color:#7b5148;line-height:1.8}
+    .videoBox{position:relative;overflow:hidden;border-radius:22px;border:4px solid #fff;background:#111;box-shadow:0 16px 35px rgba(107,45,43,.20)}
+    video{display:block;width:100%;background:#111}
+    .quote{margin-top:14px;border:1px solid #ecd6cc;border-radius:22px;background:rgba(255,248,240,.75);padding:16px}
+    .quote h3{margin:0;color:#8d1f22;font-family:Georgia,"Songti SC",serif;font-size:28px;line-height:1.55;font-weight:400}
+    .infoName{text-align:center;font-family:Georgia,"Songti SC",serif;font-size:19px;letter-spacing:.12em;color:#763d35;margin-bottom:14px}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px}
+    .infoItem{display:flex;gap:12px;border:1px solid #ecdcc5;background:#fffdf8;border-radius:20px;padding:13px}
+    .ico{display:flex;align-items:center;justify-content:center;width:43px;height:43px;border-radius:50%;background:#a92328;color:#fff;box-shadow:0 10px 20px rgba(169,35,40,.22);flex:0 0 auto}
+    .label{font-size:13px;color:#8b6659}
+    .value{margin-top:2px;font-size:15px;font-weight:600;color:#5e342f;line-height:1.5}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;border-radius:999px;background:#a92328;color:#fff;padding:14px 18px;font-weight:700;letter-spacing:.18em;box-shadow:0 12px 30px rgba(169,35,40,.28)}
+    .btn2{background:#fff9ee;color:#8e342f;border:1px solid #d7b98a;box-shadow:none}
+    .sectionHead{display:flex;align-items:center;gap:10px;margin:18px 0 12px;color:#9d2e32}
+    .sectionHead:before,.sectionHead:after{content:"";height:1px;background:#d8b59b;flex:1}
+    .sectionHead span{font-family:Georgia,"Songti SC",serif;font-size:18px;letter-spacing:.12em}
+    .photos{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .photo{background:#fff;padding:7px 7px 17px;border-radius:9px;box-shadow:0 12px 25px rgba(91,51,30,.16)}
+    .photo:nth-child(1){transform:rotate(-2deg)}
+    .photo:nth-child(2){transform:rotate(2deg)}
+    .photo:nth-child(3){transform:rotate(-3deg)}
+    .photo img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:4px}
+    .photo div{text-align:center;font-size:11px;color:#8b6659;margin-top:6px}
+    .formTitle{text-align:center}
+    .formTitle h2{font-family:Georgia,"Songti SC",serif;font-size:25px;color:#763d35;margin:0;letter-spacing:.14em}
+    .form{display:grid;gap:12px;margin-top:16px}
+    .field label{display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:13px;color:#8b6659}
+    input,select,textarea{width:100%;border:1px solid #eadbc5;background:#fffdf7;border-radius:999px;padding:13px 14px;outline:none;color:#5a352f}
+    textarea{border-radius:20px;min-height:86px;resize:vertical}
+    .msg{margin-top:10px;border-radius:16px;background:#fff1e3;padding:10px 12px;font-size:13px;color:#8d342f}
+    .board{display:grid;gap:12px}
+    .blessing{background:rgba(255,255,255,.58);border-radius:18px;padding:14px}
+    .adminGrid{display:grid;gap:10px}
+    .bottomNav{position:fixed;left:12px;right:12px;bottom:10px;z-index:20;max-width:780px;margin:auto;border:1px solid #e7d3b8;background:rgba(255,250,240,.94);border-radius:24px;box-shadow:0 15px 40px rgba(91,51,30,.18);backdrop-filter:blur(8px);padding:8px}
+    .bottomNav div{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+    .bottomNav button{border:0;background:transparent;color:#7f574d;border-radius:18px;padding:8px 4px;font-size:12px}
+    .bottomNav .active{color:#a92328}
+    .adminPage{max-width:980px;margin:0 auto;padding:16px 14px 80px}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .stat{border:1px solid #ecdcc5;background:rgba(255,255,255,.62);border-radius:18px;padding:12px}
+    .stat b{font-size:24px;color:#8d1f22}
+    .search{margin-top:14px}
+    .guest{border:1px solid #ecdcc5;background:rgba(255,255,255,.68);border-radius:18px;padding:14px;margin-top:10px}
+    .guestTop{display:flex;justify-content:space-between;gap:10px}
+    .actions{display:flex;gap:8px}
+    .smallBtn{border:0;border-radius:999px;padding:9px 12px;background:#fff5e8;color:#a92328}
+    @media(min-width:640px){
+      .wrap{padding-top:22px}
+      .hero-img{height:460px}
+      .grid{grid-template-columns:repeat(2,1fr)}
+      .adminGrid{grid-template-columns:1.1fr .9fr}
+      .form{grid-template-columns:repeat(2,1fr)}
+      .full{grid-column:1/-1}
+    }
+  </style>
+</head>
+<body>
+  <div id="site" class="wrap">
+    <div class="topbar">
+      <div class="pill">♫ 背景音乐</div>
+      <button class="circle" onclick="sharePage()">↗</button>
+    </div>
+
+    <section class="screen">
+      <div class="hero">
+        <div class="stamp">forever love<br>2026.10.01</div>
+        <img class="hero-img" src="assets/illustration.png" alt="婚礼插画">
+        <div class="hero-card">
+          <span class="tag">10.01</span>
+          <div class="eng">Wedding</div>
+          <div class="eng2">Invitation</div>
+          <p class="sub">诚邀您见证我们的幸福时刻</p>
+          <div class="dash">♥</div>
+          <div class="namebox">新郎 <b id="groomText">陆承宇</b> · 新娘 <b id="brideText">苏晚宁</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card film">
+      <h2 class="title">♥ 我们的婚礼电影预告 ♥</h2>
+      <p class="muted" style="text-align:center;margin-top:6px">记录属于我们的心动瞬间</p>
+      <div class="videoBox">
+        <video src="assets/wedding-film.mp4" poster="assets/frame-1.jpg" controls playsinline webkit-playsinline preload="metadata"></video>
+      </div>
+      <div class="quote">
+        <h3>情不知所起<br>一往而情深</h3>
+        <p class="muted">这支小小的婚礼预告，记录了我们最想和你分享的笑容、拥抱与心动瞬间。</p>
+        <p style="text-align:right;color:#8d1f22;margin:0">01:27</p>
+      </div>
+    </section>
+
+    <section id="info" class="card">
+      <div class="infoName">新郎：陆承宇 <span style="color:#b83a3d">❤</span> 新娘：苏晚宁</div>
+      <div class="grid">
+        <div class="infoItem"><div class="ico">日</div><div><div class="label">婚礼日期</div><div class="value">2026年10月1日</div></div></div>
+        <div class="infoItem"><div class="ico">时</div><div><div class="label">时间</div><div class="value">18:18</div></div></div>
+        <div class="infoItem"><div class="ico">店</div><div><div class="label">酒店</div><div class="value">云玥国际酒店</div></div></div>
+        <div class="infoItem"><div class="ico">址</div><div><div class="label">地址</div><div class="value">上海市浦东新区滨江大道88号</div></div></div>
+      </div>
+      <div style="margin-top:18px"><button class="btn" onclick="scrollToRSVP()">来宾登记 ♥</button></div>
+    </section>
+
+    <div class="sectionHead"><span>邀请您一起见证我们的幸福</span></div>
+    <section class="photos">
+      <div class="photo"><img src="assets/frame-1.jpg"><div>Happy wedding</div></div>
+      <div class="photo"><img src="assets/frame-2.jpg"><div>Love forever</div></div>
+      <div class="photo"><img src="assets/frame-3.jpg"><div>Our day</div></div>
+    </section>
+
+    <section id="rsvp" class="card">
+      <div class="formTitle">
+        <h2>来宾登记</h2>
+        <p class="muted">期待您的祝福与到来</p>
+      </div>
+      <form class="form" onsubmit="submitGuest(event)">
+        <div class="field"><label>姓名</label><input id="name" required placeholder="请输入姓名"></div>
+        <div class="field"><label>性别</label><select id="gender"><option>先生</option><option>女士</option><option>小朋友</option></select></div>
+        <div class="field"><label>联系电话</label><input id="phone" placeholder="方便婚礼前联系"></div>
+        <div class="field"><label>来宾归属</label><select id="side"><option>新郎方</option><option>新娘方</option><option>共同好友</option><option>亲友</option></select></div>
+        <div class="field"><label>是否出席</label><select id="attendance"><option>参加</option><option>待定</option><option>遗憾缺席</option></select></div>
+        <div class="field"><label>出席人数</label><input id="guestCount" type="number" min="1" max="10" value="1"></div>
+        <div class="field full"><label>忌口 / 饮食偏好</label><input id="dietary" placeholder="如：海鲜过敏、不吃辣、素食"></div>
+        <div class="field full"><label>祝福留言 / 备注</label><textarea id="note" placeholder="想对新人说的话，也可以写在这里"></textarea></div>
+        <div class="full"><button class="btn" type="submit">提交登记</button><div id="submitMsg" class="msg" style="display:none"></div></div>
+      </form>
+    </section>
+
+    <section class="board">
+      <div class="card blessing">
+        <h2 class="title" style="font-size:20px;text-align:left">来宾留言墙</h2>
+        <div class="blessing">
+          <b>小幸运</b><br>
+          <span class="muted">2026-10-01 18:18</span>
+          <p class="muted">新婚快乐！百年好合，永结同心 ❤️❤️</p>
+        </div>
+      </div>
+      <div class="card">
+        <h2 class="title" style="font-size:20px;text-align:left">管理员入口</h2>
+        <p class="muted">登录后可管理来宾信息，编辑、删除、导出名单。</p>
+        <button class="btn" onclick="openAdmin()">管理员登录</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="admin" class="adminPage" style="display:none">
+    <section id="loginBox" class="card">
+      <h1 class="title" style="text-align:left;font-size:30px">管理员登录</h1>
+      <p class="muted">默认密码：5201314</p>
+      <input id="adminPwd" type="password" placeholder="请输入后台密码">
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <button class="btn" onclick="adminLogin()">登录</button>
+        <button class="btn btn2" onclick="backSite()">返回</button>
+      </div>
+    </section>
+
+    <section id="adminBox" style="display:none">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+          <div>
+            <h1 class="title" style="text-align:left;font-size:30px">后台管理</h1>
+            <p class="muted">管理来宾登记信息</p>
+          </div>
+          <button class="btn btn2" style="width:auto" onclick="backSite()">返回</button>
+        </div>
+        <div class="stats">
+          <div class="stat"><b id="statTotal">0</b><br><span class="muted">登记数</span></div>
+          <div class="stat"><b id="statAttend">0</b><br><span class="muted">参加人数</span></div>
+          <div class="stat"><b id="statPending">0</b><br><span class="muted">待定</span></div>
+        </div>
+        <input class="search" id="search" oninput="renderGuests()" placeholder="搜索姓名、电话、忌口、备注">
+        <div style="display:flex;gap:10px;margin-top:12px">
+          <button class="btn" onclick="exportCSV()">导出 CSV</button>
+          <button class="btn btn2" onclick="loadGuests()">刷新</button>
+        </div>
+      </div>
+      <div id="guestList"></div>
+    </section>
+  </div>
+
+  <div id="nav" class="bottomNav">
+    <div>
+      <button class="active" onclick="window.scrollTo({top:0,behavior:'smooth'})">邀请函</button>
+      <button onclick="document.getElementById('info').scrollIntoView({behavior:'smooth'})">婚礼信息</button>
+      <button onclick="scrollToRSVP()">来宾登记</button>
+      <button onclick="openAdmin()">后台</button>
+    </div>
+  </div>
+
+  <script>
+    var SUPABASE_URL = "__SUPABASE_URL__";
+    var SUPABASE_KEY = "__SUPABASE_ANON_KEY__";
+    var cloudMode = !!(SUPABASE_URL && SUPABASE_KEY);
+    var guestCache = [];
+
+    function $(id){ return document.getElementById(id); }
+
+    function scrollToRSVP(){ $('rsvp').scrollIntoView({behavior:'smooth'}); }
+
+    function showMessage(text){
+      var msg = $('submitMsg');
+      msg.innerHTML = text;
+      msg.style.display = 'block';
+    }
+
+    function localGuests(){
+      try { return JSON.parse(localStorage.getItem('wechat_safe_guests') || '[]'); }
+      catch(e){ return []; }
+    }
+
+    function saveLocal(list){
+      localStorage.setItem('wechat_safe_guests', JSON.stringify(list));
+    }
+
+    function newId(){
+      return String(Date.now()) + String(Math.floor(Math.random()*10000));
+    }
+
+    function formData(){
+      return {
+        id: newId(),
+        name: $('name').value,
+        gender: $('gender').value,
+        phone: $('phone').value,
+        side: $('side').value,
+        attendance: $('attendance').value,
+        guest_count: Number($('guestCount').value || 1),
+        dietary: $('dietary').value,
+        note: $('note').value,
+        created_at: new Date().toISOString()
+      };
+    }
+
+    function clearForm(){
+      $('name').value = '';
+      $('phone').value = '';
+      $('dietary').value = '';
+      $('note').value = '';
+      $('guestCount').value = '1';
+      $('gender').value = '先生';
+      $('side').value = '新郎方';
+      $('attendance').value = '参加';
+    }
+
+    function submitGuest(e){
+      e.preventDefault();
+      var data = formData();
+      showMessage('提交中...');
+      if(cloudMode && window.fetch){
+        fetch(SUPABASE_URL + '/rest/v1/wedding_guests', {
+          method:'POST',
+          headers:{
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Content-Type':'application/json',
+            'Prefer':'return=minimal'
+          },
+          body: JSON.stringify({
+            name:data.name, gender:data.gender, phone:data.phone, side:data.side,
+            attendance:data.attendance, guest_count:data.guest_count,
+            dietary:data.dietary, note:data.note
+          })
+        }).then(function(res){
+          if(!res.ok) throw new Error('网络或数据库权限异常');
+          showMessage('登记成功，感谢您的祝福与到来。');
+          clearForm();
+        }).catch(function(err){
+          var list = localGuests();
+          list.unshift(data);
+          saveLocal(list);
+          showMessage('已登记成功。当前网络不稳定，信息已先保存在本机。');
+          clearForm();
+        });
+      } else {
+        var list = localGuests();
+        list.unshift(data);
+        saveLocal(list);
+        showMessage('登记成功，感谢您的祝福与到来。');
+        clearForm();
+      }
+    }
+
+    function openAdmin(){
+      $('site').style.display='none';
+      $('nav').style.display='none';
+      $('admin').style.display='block';
+      window.scrollTo(0,0);
+      history.replaceState(null,'','?admin=1');
+      if(sessionStorage.getItem('wedding_admin_ok') === '1'){
+        $('loginBox').style.display='none';
+        $('adminBox').style.display='block';
+        loadGuests();
+      }
+    }
+
+    function backSite(){
+      $('admin').style.display='none';
+      $('site').style.display='block';
+      $('nav').style.display='block';
+      history.replaceState(null,'',location.pathname);
+      window.scrollTo(0,0);
+    }
+
+    function adminLogin(){
+      if($('adminPwd').value === '5201314'){
+        sessionStorage.setItem('wedding_admin_ok','1');
+        $('loginBox').style.display='none';
+        $('adminBox').style.display='block';
+        loadGuests();
+      } else {
+        alert('密码不正确');
+      }
+    }
+
+    function normalize(row){
+      return {
+        id: row.id || newId(),
+        name: row.name || '',
+        gender: row.gender || '',
+        phone: row.phone || '',
+        side: row.side || '',
+        attendance: row.attendance || '',
+        guest_count: Number(row.guest_count || row.guestCount || 1),
+        dietary: row.dietary || '',
+        note: row.note || '',
+        created_at: row.created_at || row.createdAt || ''
+      };
+    }
+
+    function loadGuests(){
+      if(cloudMode && window.fetch){
+        fetch(SUPABASE_URL + '/rest/v1/wedding_guests?select=*&order=created_at.desc', {
+          headers:{ 'apikey': SUPABASE_KEY, 'Authorization':'Bearer ' + SUPABASE_KEY }
+        }).then(function(res){
+          if(!res.ok) throw new Error('读取失败');
+          return res.json();
+        }).then(function(data){
+          guestCache = (data || []).map(normalize);
+          renderGuests();
+        }).catch(function(){
+          guestCache = localGuests().map(normalize);
+          renderGuests();
+        });
+      } else {
+        guestCache = localGuests().map(normalize);
+        renderGuests();
+      }
+    }
+
+    function renderGuests(){
+      var q = ($('search') && $('search').value || '').toLowerCase();
+      var list = guestCache.filter(function(g){
+        return !q || [g.name,g.phone,g.side,g.attendance,g.dietary,g.note].join(' ').toLowerCase().indexOf(q) >= 0;
+      });
+
+      var attend = 0, pending = 0;
+      guestCache.forEach(function(g){
+        if(g.attendance === '参加') attend += Number(g.guest_count || 1);
+        if(g.attendance === '待定') pending += 1;
+      });
+      $('statTotal').innerHTML = guestCache.length;
+      $('statAttend').innerHTML = attend;
+      $('statPending').innerHTML = pending;
+
+      var html = '';
+      if(list.length === 0) html = '<div class="card muted">暂无来宾数据</div>';
+      list.forEach(function(g){
+        html += '<div class="guest"><div class="guestTop"><div><b>' + escapeHtml(g.name) + ' ' + escapeHtml(g.gender) + '</b><div class="muted">' + escapeHtml(g.phone || '未填写电话') + ' · ' + escapeHtml(g.side) + ' · ' + escapeHtml(g.attendance) + ' · ' + escapeHtml(g.guest_count) + '人</div><div class="muted">忌口：' + escapeHtml(g.dietary || '无') + ' / 备注：' + escapeHtml(g.note || '无') + '</div></div><div class="actions"><button class="smallBtn" onclick="editGuest(\\'' + g.id + '\\')">编辑</button><button class="smallBtn" onclick="deleteGuest(\\'' + g.id + '\\')">删除</button></div></div></div>';
+      });
+      $('guestList').innerHTML = html;
+    }
+
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, function(c){
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+      });
+    }
+
+    function editGuest(id){
+      var g = null;
+      for(var i=0;i<guestCache.length;i++){ if(String(guestCache[i].id) === String(id)) g = guestCache[i]; }
+      if(!g) return;
+      var name = prompt('姓名', g.name);
+      if(name === null) return;
+      var attendance = prompt('是否出席：参加 / 待定 / 遗憾缺席', g.attendance);
+      if(attendance === null) return;
+      var guest_count = prompt('人数', g.guest_count);
+      if(guest_count === null) return;
+      var dietary = prompt('忌口', g.dietary);
+      if(dietary === null) return;
+      g.name = name;
+      g.attendance = attendance;
+      g.guest_count = Number(guest_count || 1);
+      g.dietary = dietary;
+
+      if(cloudMode && window.fetch && String(g.id).length > 20){
+        fetch(SUPABASE_URL + '/rest/v1/wedding_guests?id=eq.' + encodeURIComponent(g.id), {
+          method:'PATCH',
+          headers:{ 'apikey':SUPABASE_KEY, 'Authorization':'Bearer '+SUPABASE_KEY, 'Content-Type':'application/json' },
+          body: JSON.stringify({ name:g.name, attendance:g.attendance, guest_count:g.guest_count, dietary:g.dietary })
+        }).then(loadGuests).catch(renderGuests);
+      } else {
+        var list = localGuests().map(normalize);
+        for(var j=0;j<list.length;j++){ if(String(list[j].id) === String(id)) list[j] = g; }
+        saveLocal(list);
+        guestCache = list;
+        renderGuests();
+      }
+    }
+
+    function deleteGuest(id){
+      if(!confirm('确定删除这条登记信息吗？')) return;
+      if(cloudMode && window.fetch && String(id).length > 20){
+        fetch(SUPABASE_URL + '/rest/v1/wedding_guests?id=eq.' + encodeURIComponent(id), {
+          method:'DELETE',
+          headers:{ 'apikey':SUPABASE_KEY, 'Authorization':'Bearer '+SUPABASE_KEY }
+        }).then(loadGuests).catch(loadGuests);
+      } else {
+        var list = localGuests().filter(function(g){ return String(g.id) !== String(id); });
+        saveLocal(list);
+        guestCache = list;
+        renderGuests();
+      }
+    }
+
+    function exportCSV(){
+      var rows = [['姓名','性别','电话','归属','是否出席','人数','忌口','备注','时间']];
+      guestCache.forEach(function(g){
+        rows.push([g.name,g.gender,g.phone,g.side,g.attendance,g.guest_count,g.dietary,g.note,g.created_at]);
+      });
+      var csv = rows.map(function(row){
+        return row.map(function(cell){ return '"' + String(cell || '').replace(/"/g,'""') + '"'; }).join(',');
+      }).join('\\n');
+      var blob = new Blob(['\\ufeff' + csv], {type:'text/csv;charset=utf-8;'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = '婚礼来宾登记.csv'; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function sharePage(){
+      if(navigator.share){ navigator.share({title:'我们结婚啦', url:location.href}); }
+      else { alert('请点击右上角菜单分享给亲友'); }
+    }
+
+    if(location.search.indexOf('admin=1') >= 0) openAdmin();
+  </script>
+</body>
 </html>

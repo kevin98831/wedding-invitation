@@ -1,74 +1,40 @@
-# 婚礼邀请网页：手绘猫咪 + 复古拼贴版
+# 微信保险版婚礼邀请网页
 
-这是按你选定的最后一版 UI 做的婚礼电子请帖网页。
+这个版本专门为微信内置浏览器做了简化：
+- 不用 React
+- 不用 Vite 前端打包
+- 不用 type=module
+- 只有 HTML + CSS + 传统 JavaScript
+- Netlify 仍然可以用 `npm run build` 输出到 `dist`
 
-## 包含功能
+## 上传方式
 
-- 手绘婚礼插画风首页
-- 视频预告区域，已内置你上传的视频
-- 视频帧拼贴相册
-- 婚礼日期、时间、酒店、地址信息
-- 来宾登记表
-- 后台管理页面
-  - 查看来宾
-  - 编辑来宾
-  - 删除来宾
-  - 导出 CSV
+把本文件夹里的内容上传到 GitHub：
+- package.json
+- build.js
+- index.html
+- README.md
+- assets 文件夹
+
+Netlify 保持：
+- Build command: `npm run build`
+- Publish directory: `dist`
 
 ## 后台入口
 
-上线后访问：
+`你的网址/?admin=1`
 
-```text
-你的网址/?admin=1
-```
+密码：
 
-默认后台密码：
+`5201314`
 
-```text
-5201314
-```
+## 改信息
 
-## Supabase 环境变量
+直接在 `index.html` 里搜索：
+- 陆承宇
+- 苏晚宁
+- 2026年10月1日
+- 云玥国际酒店
+- 上海市浦东新区滨江大道88号
 
-如果你继续用之前的 Supabase，Netlify / Vercel 里保持这两个环境变量：
-
-```text
-VITE_SUPABASE_URL
-VITE_SUPABASE_ANON_KEY
-```
-
-不配置也能本地演示，但数据只会保存在当前浏览器。
-
-## 如何改新人信息
-
-打开：
-
-```text
-src/App.jsx
-```
-
-修改开头的 `config`：
-
-```js
-groom: '陆承宇',
-bride: '苏晚宁',
-date: '2026年10月1日',
-time: '18:18',
-hotel: '云玥国际酒店',
-address: '上海市浦东新区滨江大道88号',
-```
-
-## 如何换视频
-
-替换：
-
-```text
-public/assets/wedding-film.mp4
-```
-
-或者修改 `src/App.jsx` 里的：
-
-```js
-videoUrl: '/assets/wedding-film.mp4'
-```
+替换成自己的内容。
