@@ -1,35 +1,224 @@
-
-const fs = require('fs');
-const path = require('path');
-
-const root = __dirname;
-const dist = path.join(root, 'dist');
-
-function copyDir(src, dest) {
-  if (!fs.existsSync(src)) return;
-  fs.mkdirSync(dest, { recursive: true });
-  for (const item of fs.readdirSync(src)) {
-    const s = path.join(src, item);
-    const d = path.join(dest, item);
-    if (fs.statSync(s).isDirectory()) copyDir(s, d);
-    else fs.copyFileSync(s, d);
-  }
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>我们结婚啦</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  color:#56362f;
+  background:#efe2cf;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif;
+  background-image:
+    radial-gradient(circle at 10% 8%,rgba(255,255,255,.85),transparent 26%),
+    radial-gradient(circle at 90% 12%,rgba(139,20,27,.12),transparent 26%),
+    linear-gradient(180deg,#f7eddf 0%,#ecd6c5 52%,#f4e7d6 100%);
 }
-
-fs.rmSync(dist, { recursive: true, force: true });
-fs.mkdirSync(dist, { recursive: true });
-
-const vars = {
-  '__SUPABASE_URL__': process.env.VITE_SUPABASE_URL || '',
-  '__SUPABASE_ANON_KEY__': process.env.VITE_SUPABASE_ANON_KEY || ''
-};
-
-for (const file of ['index.html', 'rsvp.html', 'admin.html']) {
-  let html = fs.readFileSync(path.join(root, file), 'utf8');
-  for (const [key, value] of Object.entries(vars)) {
-    html = html.replaceAll(key, value);
-  }
-  fs.writeFileSync(path.join(dist, file), html);
+a{text-decoration:none;color:inherit}
+button,input,select,textarea{font:inherit}
+.page{max-width:760px;margin:0 auto;padding:14px 12px 92px}
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:4px 2px 14px;
 }
+.music,.share{
+  border:0;border-radius:999px;background:rgba(255,250,242,.88);
+  box-shadow:0 8px 22px rgba(80,43,26,.12);
+  color:#7c5148;
+}
+.music{padding:9px 14px;font-size:13px}
+.share{width:42px;height:42px;color:#a12227}
+.hero{
+  overflow:hidden;border-radius:34px;border:1px solid rgba(255,255,255,.82);
+  background:#fbf4e8;
+  box-shadow:0 26px 85px rgba(88,50,31,.20);
+}
+.heroImg{
+  display:block;width:100%;
+  height:auto;
+  background:#f5ead9;
+}
+.heroBody{
+  margin-top:-2px;
+  padding:24px 20px 26px;
+  background:linear-gradient(180deg,rgba(255,248,238,.96),rgba(255,245,234,.92));
+  text-align:center;
+}
+.en{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:42px;
+  line-height:.95;
+  font-style:italic;
+  color:#911d22;
+}
+.cn{
+  margin-top:10px;
+  letter-spacing:.16em;
+  font-size:16px;
+  color:#6a453e;
+}
+.names{
+  margin:18px auto 0;
+  border:1px solid #e4c9aa;
+  border-radius:999px;
+  background:#fffdf7;
+  padding:12px 14px;
+  max-width:520px;
+  color:#70433c;
+  font-size:18px;
+}
+.names b{color:#9b2429}
+.ctaRow{display:grid;gap:10px;margin-top:18px}
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;
+  border:0;border-radius:999px;
+  background:#a92328;color:white;
+  padding:15px 18px;
+  font-weight:700;
+  letter-spacing:.12em;
+  box-shadow:0 14px 34px rgba(169,35,40,.28);
+}
+.btnLight{
+  background:#fffaf0;
+  color:#8e342f;
+  border:1px solid #d7b98a;
+  box-shadow:none;
+}
+.card{
+  margin-top:16px;
+  border:1px solid #e3c9aa;
+  border-radius:28px;
+  background:rgba(255,250,241,.92);
+  box-shadow:0 18px 48px rgba(88,50,31,.13);
+  padding:18px;
+}
+.title{
+  margin:0;
+  font-family:Georgia,"Songti SC",serif;
+  color:#8d1f22;
+  font-size:24px;
+  letter-spacing:.12em;
+  text-align:center;
+}
+.sub{font-size:13px;line-height:1.8;color:#856057}
+.infoGrid{display:grid;gap:10px;margin-top:15px}
+.info{
+  display:flex;gap:12px;align-items:center;
+  border:1px solid #ead7bd;
+  border-radius:20px;
+  background:#fffdf8;
+  padding:13px;
+}
+.dot{
+  width:42px;height:42px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:#a92328;color:#fff;font-weight:700;flex:0 0 auto;
+  box-shadow:0 10px 20px rgba(169,35,40,.20);
+}
+.label{font-size:12px;color:#8b6659}
+.value{margin-top:3px;font-size:15px;font-weight:650;line-height:1.45;color:#5e342f}
+.videoBox{
+  overflow:hidden;margin-top:14px;border:4px solid #fff;border-radius:22px;background:#111;
+  box-shadow:0 16px 35px rgba(107,45,43,.18)
+}
+video{display:block;width:100%;background:#111}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
+.photo{background:#fff;padding:7px 7px 16px;border-radius:9px;box-shadow:0 12px 25px rgba(91,51,30,.16)}
+.photo:nth-child(1){transform:rotate(-2deg)}.photo:nth-child(2){transform:rotate(2deg)}.photo:nth-child(3){transform:rotate(-3deg)}
+.photo img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:4px}
+.photo div{text-align:center;font-size:11px;color:#8b6659;margin-top:5px}
+.form{display:grid;gap:13px;margin-top:16px}
+.field label{display:block;margin-bottom:7px;font-size:13px;color:#8b6659}
+input,select,textarea{
+  width:100%;border:1px solid #eadbc5;background:#fffdf7;border-radius:999px;
+  padding:13px 14px;outline:none;color:#5a352f;
+}
+textarea{border-radius:20px;min-height:92px;resize:vertical}
+.msg{display:none;margin-top:10px;border-radius:16px;background:#fff1e3;padding:10px 12px;font-size:13px;color:#8d342f}
+.footer{text-align:center;margin-top:24px;font-size:12px;color:#967266;letter-spacing:.1em}
+.bottomCta{
+  position:fixed;left:12px;right:12px;bottom:12px;z-index:30;max-width:740px;margin:auto;
+  border:1px solid #e2c8aa;background:rgba(255,250,241,.95);border-radius:24px;
+  box-shadow:0 16px 45px rgba(91,51,30,.22);backdrop-filter:blur(10px);padding:8px;
+}
+.bottomGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bottomGrid a{display:flex;align-items:center;justify-content:center;border-radius:18px;padding:12px 5px;font-size:13px;color:#7c564c}
+.bottomGrid .red{background:#a92328;color:#fff;font-weight:700}
+.adminPage{max-width:760px;margin:0 auto;padding:16px 12px 90px}
+.statGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+.stat{border:1px solid #ead9c0;border-radius:18px;background:rgba(255,255,255,.6);padding:12px;text-align:center}
+.stat b{display:block;font-size:22px;color:#8d1f22}
+.guest{border:1px solid #ead9c0;border-radius:18px;background:rgba(255,255,255,.66);padding:13px;margin-top:10px}
+.guestTop{display:flex;justify-content:space-between;gap:10px}
+.smallBtn{border:0;border-radius:999px;background:#fff5e8;color:#a92328;padding:8px 10px;margin-left:5px}
+@media(min-width:640px){
+  .page{padding-top:18px}
+  .ctaRow{grid-template-columns:1fr 1fr}
+  .infoGrid{grid-template-columns:1fr 1fr}
+  .form{grid-template-columns:1fr 1fr}
+  .full{grid-column:1/-1}
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="topbar">
+    <button class="music">♫ 背景音乐</button>
+    <button class="share">↗</button>
+  </div>
 
-copyDir(path.join(root, 'assets'), path.join(dist, 'assets'));
+  <section class="hero">
+    <img class="heroImg" src="assets/wedding-illustration.png" alt="婚礼插画">
+    <div class="heroBody">
+      <div class="en">Wedding</div>
+      <div class="cn">诚邀您见证我们的幸福时刻</div>
+      <div class="names">新郎 <b>陆承宇</b> · 新娘 <b>苏晚宁</b></div>
+      <div class="ctaRow">
+        <a class="btn" href="rsvp.html">进入来宾登记</a>
+        <a class="btn btnLight" href="#info">查看婚礼信息</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="info" class="card">
+    <h2 class="title">婚礼信息</h2>
+    <div class="infoGrid">
+      <div class="info"><div class="dot">日</div><div><div class="label">婚礼日期</div><div class="value">2026年10月1日</div></div></div>
+      <div class="info"><div class="dot">时</div><div><div class="label">时间</div><div class="value">18:18</div></div></div>
+      <div class="info"><div class="dot">店</div><div><div class="label">酒店</div><div class="value">云玥国际酒店</div></div></div>
+      <div class="info"><div class="dot">址</div><div><div class="label">地址</div><div class="value">上海市浦东新区滨江大道88号</div></div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 class="title">婚礼电影预告</h2>
+    <p class="sub" style="text-align:center">点击播放我们的婚礼视频</p>
+    <div class="videoBox">
+      <video src="assets/wedding-film.mp4" poster="assets/film-1.jpg" controls playsinline webkit-playsinline preload="metadata"></video>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 class="title">幸福瞬间</h2>
+    <div class="photos">
+      <div class="photo"><img src="assets/film-1.jpg"><div>Happy wedding</div></div>
+      <div class="photo"><img src="assets/film-2.jpg"><div>Love forever</div></div>
+      <div class="photo"><img src="assets/film-3.jpg"><div>Our day</div></div>
+    </div>
+  </section>
+
+  <div class="footer">♡ 2026 我们结婚啦 · 感谢您的祝福与见证 ♡</div>
+</main>
+
+<div class="bottomCta">
+  <div class="bottomGrid">
+    <a href="#info">婚礼信息</a>
+    <a class="red" href="rsvp.html">来宾登记</a>
+  </div>
+</div>
+</body>
+</html>
