@@ -1,1 +1,37 @@
 @import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #f4e9da;
+  font-family: ui-serif, "Songti SC", "SimSun", "STSong", Georgia, serif;
+}
+
+input, select, textarea, button {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.paper-texture {
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.55), transparent 24%),
+    radial-gradient(circle at 80% 0%, rgba(255,230,220,0.55), transparent 26%),
+    linear-gradient(180deg, rgba(253,246,235,0.98), rgba(247,226,214,0.96));
+}
+
+.torn-top {
+  clip-path: polygon(0 6%, 6% 4%, 12% 8%, 18% 5%, 24% 9%, 30% 6%, 37% 8%, 44% 5%, 51% 8%, 58% 5%, 66% 7%, 74% 4%, 83% 8%, 91% 5%, 100% 7%, 100% 100%, 0 100%);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.video-card video::-webkit-media-controls-panel {
+  background-image: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+}

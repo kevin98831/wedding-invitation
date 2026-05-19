@@ -1,19 +1,74 @@
-# 婚礼电子请帖 RSVP App
+# 婚礼邀请网页：手绘猫咪 + 复古拼贴版
 
-## 环境变量
+这是按你选定的最后一版 UI 做的婚礼电子请帖网页。
 
-在 Vercel 里添加：
+## 包含功能
 
-VITE_SUPABASE_URL=你的 Supabase Project URL，不要带 /rest/v1/
-VITE_SUPABASE_ANON_KEY=你的 Supabase Publishable key
+- 手绘婚礼插画风首页
+- 视频预告区域，已内置你上传的视频
+- 视频帧拼贴相册
+- 婚礼日期、时间、酒店、地址信息
+- 来宾登记表
+- 后台管理页面
+  - 查看来宾
+  - 编辑来宾
+  - 删除来宾
+  - 导出 CSV
 
-注意：不要把 Secret key / service_role key 放到前端或发给别人。
+## 后台入口
 
-## 本地运行
+上线后访问：
 
-npm install
-npm run dev
+```text
+你的网址/?admin=1
+```
 
-## 构建
+默认后台密码：
 
-npm run build
+```text
+5201314
+```
+
+## Supabase 环境变量
+
+如果你继续用之前的 Supabase，Netlify / Vercel 里保持这两个环境变量：
+
+```text
+VITE_SUPABASE_URL
+VITE_SUPABASE_ANON_KEY
+```
+
+不配置也能本地演示，但数据只会保存在当前浏览器。
+
+## 如何改新人信息
+
+打开：
+
+```text
+src/App.jsx
+```
+
+修改开头的 `config`：
+
+```js
+groom: '陆承宇',
+bride: '苏晚宁',
+date: '2026年10月1日',
+time: '18:18',
+hotel: '云玥国际酒店',
+address: '上海市浦东新区滨江大道88号',
+```
+
+## 如何换视频
+
+替换：
+
+```text
+public/assets/wedding-film.mp4
+```
+
+或者修改 `src/App.jsx` 里的：
+
+```js
+videoUrl: '/assets/wedding-film.mp4'
+```
