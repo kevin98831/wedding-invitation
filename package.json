@@ -13,7 +13,8 @@
     "react": "latest",
     "react-dom": "latest",
     "tailwindcss": "latest",
-    "vite": "latest"
+    "vite": "latest",
+    "@vitejs/plugin-legacy": "latest"
   },
   "devDependencies": {}
 }
